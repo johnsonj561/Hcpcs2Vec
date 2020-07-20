@@ -1,4 +1,17 @@
 import pandas as pd
+import numpy as np
+import os
+import sys
+from sklearn.preprocessing import LabelEncoder
+import pickle
+import tensorflow as tf
+Keras = tf.keras
+Model, Layers = Keras.models.Model, Keras.layers
+make_sampling_table = Keras.preprocessing.sequence.make_sampling_table
+skipgrams = Keras.preprocessing.sequence.skipgrams
+proj_dir = '/Users/jujohnson/git/Hcpcs2Vec/'
+sys.path.append(proj_dir)
+from utils import Timer  # NOQA: E402
 
 
 def load_data_sample(data_dir, nrows):
@@ -19,15 +32,17 @@ def load_data_sample(data_dir, nrows):
     columns = {
         'National Provider Identifier': 'npi',
         'HCPCS Code': 'hcpcs',
+        'HCPCS Description': 'description',
         'Number of Services': 'count',
     }
     df = pd.read_csv(data_file, usecols=list(columns.keys()))
     df = df.sample(nrows)
     df.rename(columns=columns, inplace=True)
-    print(f'Loaded data with shape: {data.shape}')
+    print(f'Loaded data with shape: {df.shape}')
+    return df
 
 
-def load_data(data_dir, output_path=None, refresh=False):
+def load_data(data_dir, output_path=None, debug=False):
     '''Return raw Medicare Part B Data 2012 - 2015.
       Handles normalization of column names.
       Assumes data is stored in form "<data_dir>/<year>/filename" in csv format.
@@ -39,9 +54,13 @@ def load_data(data_dir, output_path=None, refresh=False):
       output_path -- path to save aggregated results (gzip)
 
       refresh -- override return of existing data at <output_path>
+
+      debug -- return subset of 2012 data if true
     '''
-    exists = os.path.isfile(output_path)
-    if exists and not refresh:
+    if debug:
+        return load_data_sample(data_dir, 1000000)
+
+    if os.path.isfile(output_path):
         return pd.read_csv(output_path)
 
     # load 2012 Part B
@@ -140,3 +159,75 @@ def load_data(data_dir, output_path=None, refresh=False):
         print(f'Results saved to {output_path}')
 
     return df
+
+
+def get_hcpcs_ids(data, output_file):
+    le = LabelEncoder()
+    data['hcpcs_id'] = le.fit_transform(data['hcpcs'])
+    with open(output_file, 'wb') as fout:
+        pickle.dump(le.classes_, fout)
+    return data
+
+
+def get_hcpcs_corpus(data):
+    corpus = []
+    for npi, group in data.groupby(by='npi'):
+        group.sort_values(by='count', inplace=True)
+        hcpcs_set = np.asarray(group['hcpcs_id'], dtype='int16')
+        corpus.append(hcpcs_set)
+    corpus_length = len(corpus)
+    return corpus
+
+
+def set_max_hcpcs_seq_length(corpus, quantile):
+    lengths = np.array(list(map(lambda x: len(x), corpus)))
+    max_seq_length = np.quantile(lengths, quantile)
+    corpus = np.array(list(filter(lambda x: len(x) <= max_seq_length, corpus)))
+    return corpus
+
+
+def get_hcpcs_skipgrams(vocab_size, window_size):
+    sampling_table = make_sampling_table(vocab_size)
+    x, y = [], []
+    for seq in corpus:
+        pairs, labels = skipgrams(
+            seq, vocab_size, window_size=window_size, sampling_table=sampling_table)
+        x.extend(pairs)
+        y.extend(labels)
+    return np.array(x, dtype='int16'), np.array(y, dtype='int8')
+
+
+def get_medicare_skipgrams(data_dir, partb_output, hcpcs_id_output, debug):
+    timer = Timer()
+    # Load Medicare Data
+    data = load_data(data_dir, partb_output, debug)
+    print(f'Loaded data in {timer.lap()}')
+
+    # Create HCPCS <--> ID mapping
+    data = get_hcpcs_ids(data, hcpcs_id_output)
+    print(f'Created HCPCS ID mapping in {timer.lap()}')
+
+    # Extract HCPCS corpus from the Medicare data
+    corpus = get_hcpcs_corpus(data)
+    print(f'Created corpus with length: {len(corpus)} in {timer.lap()}')
+
+    # Reduce the max sequence length
+    quantile = 0.98
+    corpus = set_max_hcpcs_seq_length(quantile)
+    print(
+        f'Removed the longest hcpcs sequences from {quantile}+ quantile in {timer.lap()}')
+    print(f'Updated corpus length {len(corpus)}')
+
+    # Get vocab size
+    vocab_size = data['hcpcs_id'].max() + 1
+    print(f'Using vocab_size: {vocab_size}')
+
+    # Free up some memory
+    del data
+
+    # Create skip-gram pairs and negative Ssmples (thx Keras)
+    timer.reset()
+    x, y = get_hcpcs_skipgrams(vocab_size, window_size)
+    print(f'Created skip-gram pairs with shape: {x.shape} in {timer.lap()}')
+
+    return x, y
