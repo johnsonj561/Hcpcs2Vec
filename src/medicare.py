@@ -48,6 +48,7 @@ def load_data(data_dir, output_path=None, refresh=False):
     columns = {
         'National Provider Identifier': 'npi',
         'HCPCS Code': 'hcpcs',
+        'HCPCS Description': 'description',
         'Number of Services': 'count'
     }
     path = os.path.join(
@@ -63,6 +64,7 @@ def load_data(data_dir, output_path=None, refresh=False):
     columns = {
         'National Provider Identifier ': 'npi',
         'HCPCS_CODE': 'hcpcs',
+        'HCPCS_DESCRIPTION': 'description',
         'LINE_SRVC_CNT': 'count'
     }
     path = os.path.join(
@@ -78,6 +80,7 @@ def load_data(data_dir, output_path=None, refresh=False):
     columns = {
         'National Provider Identifier': 'npi',
         'HCPCS Code': 'hcpcs',
+        'HCPCS Description': 'description',
         'Number of Services': 'count'
     }
     path = os.path.join(
@@ -93,6 +96,7 @@ def load_data(data_dir, output_path=None, refresh=False):
     columns = {
         'National Provider Identifier': 'npi',
         'HCPCS Code': 'hcpcs',
+        'HCPCS Description': 'description',
         'Number of Services': 'count'
     }
     path = os.path.join(
