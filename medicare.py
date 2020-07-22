@@ -129,6 +129,7 @@ def load_data(data_dir, output_path=None, debug=False):
     # Concatenate All Years
     df = pd.concat([df_2012, df_2013, df_2014, df_2015, df_2016, df_2017])
     print(f'All years concatenated, final shape is {df.shape}')
+    print(f'Data info: \n{df.info()}')
 
     # Save Results
     if output_path != None:
@@ -140,7 +141,7 @@ def load_data(data_dir, output_path=None, debug=False):
 
 def get_hcpcs_ids(data, output_file):
     le = LabelEncoder()
-    data['hcpcs_id'] = le.fit_transform(data['hcpcs'])
+    data['hcpcs_id'] = le.fit_transform(data['hcpcs'].astype(str))
     with open(output_file, 'wb') as fout:
         pickle.dump(le.classes_, fout)
     return data
