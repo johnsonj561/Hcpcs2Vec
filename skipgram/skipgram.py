@@ -4,7 +4,8 @@ import pickle
 import os
 import sys
 import math
-proj_dir = '/Users/jujohnson/git/Hcpcs2Vec/'
+proj_dir = '/home/jjohn273/git/Hcpcs2Vec/'
+# proj_dir = '/Users/jujohnson/git/Hcpcs2Vec/'
 sys.path.append(proj_dir)
 from medicare import get_medicare_skipgrams  # NOQA: E402
 from utils import file_ts, Timer, args_to_dict  # NOQA: E402

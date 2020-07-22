@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "skipgram.py", line 56, in <module>
+    debug=debug)
+  File "/home/jjohn273/git/Hcpcs2Vec/medicare.py", line 181, in get_medicare_skipgrams
+    data = load_data(data_dir, partb_output, debug)
+  File "/home/jjohn273/git/Hcpcs2Vec/medicare.py", line 135, in load_data
+    df.to_csv(output_path, compression='gzip')
+  File "/mnt/beegfs/home/jjohn273/git/Hcpcs2Vec/env/lib/python3.7/site-packages/pandas/core/generic.py", line 3204, in to_csv
+    formatter.save()
+  File "/mnt/beegfs/home/jjohn273/git/Hcpcs2Vec/env/lib/python3.7/site-packages/pandas/io/formats/csvs.py", line 188, in save
+    compression=dict(self.compression_args, method=self.compression),
+  File "/mnt/beegfs/home/jjohn273/git/Hcpcs2Vec/env/lib/python3.7/site-packages/pandas/io/common.py", line 384, in get_handle
+    f = gzip.open(path_or_buf, mode)
+  File "/opt/ohpc/pub/utils/anaconda/3/2019.03/lib/python3.7/gzip.py", line 53, in open
+    binary_file = GzipFile(filename, gz_mode, compresslevel)
+  File "/opt/ohpc/pub/utils/anaconda/3/2019.03/lib/python3.7/gzip.py", line 163, in __init__
+    fileobj = self.myfileobj = builtins.open(filename, mode or 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: '/home/jjohn273/git/Hcpcs2Vec/data/partb-2012-2017.csv.gz'
+srun: error: node088: task 0: Exited with exit code 1

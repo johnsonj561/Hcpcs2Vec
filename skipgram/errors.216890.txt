@@ -1,0 +1,7 @@
+2020-07-21 22:28:33.075977: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcuda.so.1
+2020-07-21 22:28:35.483316: E tensorflow/stream_executor/cuda/cuda_driver.cc:313] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2020-07-21 22:28:35.483419: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (node088.hpc.fau.edu): /proc/driver/nvidia/version does not exist
+2020-07-21 22:28:35.484434: I tensorflow/core/platform/cpu_feature_guard.cc:143] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2020-07-21 22:28:35.500883: I tensorflow/core/platform/profile_utils/cpu_utils.cc:102] CPU Frequency: 2594115000 Hz
+2020-07-21 22:28:35.501204: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x55af20664f00 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-07-21 22:28:35.501296: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version

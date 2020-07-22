@@ -1,0 +1,7 @@
+Loaded 2012 with shape (9153272, 5)
+Loaded 2013 with shape (9287877, 5)
+Loaded 2014 with shape (9316308, 5)
+Loaded 2015 with shape (9497892, 5)
+Loaded 2016 with shape (9714896, 5)
+Loaded 2017 with shape (9847443, 5)
+All years concatenated, final shape is (56817688, 5)
