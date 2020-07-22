@@ -1,3 +1,7 @@
+import tensorflow as tf
+import pickle
+from sklearn.preprocessing import LabelEncoder
+import numpy as np
 from sklearn.exceptions import UndefinedMetricWarning
 import warnings
 import pandas as pd
@@ -13,18 +17,10 @@ warnings.filterwarnings(action='ignore', category=UndefinedMetricWarning)
 def file_ts():
     '''Returns formatted timestamp for identifying files'''
     ts = datetime.now()
-    return ts.strftime('%m-%d-%y-%H-%M %S')
+    return ts.strftime('%m-%d-%y-%H-%M-%S')
 
 
 def args_to_dict(args, skip_filename=True):
-    '''Converts CLI args of the form <key1=value1 ... keyn=value-n> to dictionary.
-
-    Keyword arguments:
-
-    args -- sys.argv
-
-    skip_filename -- skips args filename, set False if removed manually
-    '''
     if skip_filename:
         args = args[1:]
     result = {}

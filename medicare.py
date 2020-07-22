@@ -15,15 +15,6 @@ from utils import Timer  # NOQA: E402
 
 
 def load_data_sample(data_dir, nrows):
-    '''Returns a sample of Medicare Part B data from 2012.
-      Expects 2012 data to exist at <data_dir>/2012/<filename>.csv.gz to exist.
-
-      Keyword arguments:
-
-      data_dir -- root directory of Medicare data
-
-      nrows -- number of rows to sample
-    '''
     data_file = os.path.join(
         data_dir,
         '2012',
@@ -43,22 +34,8 @@ def load_data_sample(data_dir, nrows):
 
 
 def load_data(data_dir, output_path=None, debug=False):
-    '''Return raw Medicare Part B Data 2012 - 2015.
-      Handles normalization of column names.
-      Assumes data is stored in form "<data_dir>/<year>/filename" in csv format.
-
-      Keyword arguments:
-
-      data_dir -- root directory of Medicare data
-
-      output_path -- path to save aggregated results (gzip)
-
-      refresh -- override return of existing data at <output_path>
-
-      debug -- return subset of 2012 data if true
-    '''
     if debug:
-        return load_data_sample(data_dir, 1000000)
+        return load_data_sample(data_dir, 2000000)
 
     if os.path.isfile(output_path):
         return pd.read_csv(output_path)
@@ -186,7 +163,8 @@ def set_max_hcpcs_seq_length(corpus, quantile):
     return corpus
 
 
-def get_hcpcs_skipgrams(vocab_size, window_size):
+def get_hcpcs_skipgrams(corpus, vocab_size, window_size):
+    print(f'Using vocab_size {vocab_size}')
     sampling_table = make_sampling_table(vocab_size)
     x, y = [], []
     for seq in corpus:
@@ -197,7 +175,7 @@ def get_hcpcs_skipgrams(vocab_size, window_size):
     return np.array(x, dtype='int16'), np.array(y, dtype='int8')
 
 
-def get_medicare_skipgrams(data_dir, partb_output, hcpcs_id_output, debug):
+def get_medicare_skipgrams(data_dir, partb_output, hcpcs_id_output, window_size, debug):
     timer = Timer()
     # Load Medicare Data
     data = load_data(data_dir, partb_output, debug)
@@ -213,7 +191,7 @@ def get_medicare_skipgrams(data_dir, partb_output, hcpcs_id_output, debug):
 
     # Reduce the max sequence length
     quantile = 0.98
-    corpus = set_max_hcpcs_seq_length(quantile)
+    corpus = set_max_hcpcs_seq_length(corpus, quantile)
     print(
         f'Removed the longest hcpcs sequences from {quantile}+ quantile in {timer.lap()}')
     print(f'Updated corpus length {len(corpus)}')
@@ -227,7 +205,7 @@ def get_medicare_skipgrams(data_dir, partb_output, hcpcs_id_output, debug):
 
     # Create skip-gram pairs and negative Ssmples (thx Keras)
     timer.reset()
-    x, y = get_hcpcs_skipgrams(vocab_size, window_size)
+    x, y = get_hcpcs_skipgrams(corpus, vocab_size, window_size)
     print(f'Created skip-gram pairs with shape: {x.shape} in {timer.lap()}')
 
     return x, y

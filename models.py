@@ -16,14 +16,18 @@ def skipgram_model(vocab_size, embedding_size):
 
     # embed target and context
     target = embedding(input_target)
+    target = Reshape((embedding_size, 1))(target)
+
     context = embedding(input_context)
+    context = Reshape((embedding_size, 1))(context)
 
     # estimate similarity between target and context with dot product
     dot_product = Dot([target, context], axes=1)
+    dot_product = Reshape((1,))(dot_product)
 
     # binary sigmoid output
     output = Dense(1, activation='sigmoid')(dot_product)
-
+    output = Keras.layers.Flatten()(output)
     model = Keras.Model(inputs=[input_target, input_context], outputs=output)
     model.compile(loss='binary_crossentropy', optimizer='adam')
     return model
