@@ -5,6 +5,7 @@ skipgrams = Keras.preprocessing.sequence.skipgrams
 Model = Keras.models.Model
 Dense, Dot = Keras.layers.Dense, Keras.layers.dot
 Embedding, Reshape, Input = Keras.layers.Embedding, Keras.layers.Reshape, Keras.layers.Input
+CSVLogger = Keras.callbacks.CSVLogger
 
 
 def skipgram_model(vocab_size, embedding_size):
@@ -31,3 +32,7 @@ def skipgram_model(vocab_size, embedding_size):
     model = Keras.Model(inputs=[input_target, input_context], outputs=output)
     model.compile(loss='binary_crossentropy', optimizer='adam')
     return model
+
+
+def csv_callback(output_file):
+    return CSVLogger(output_file)
