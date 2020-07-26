@@ -6,6 +6,7 @@ Model = Keras.models.Model
 Dense, Dot = Keras.layers.Dense, Keras.layers.dot
 Embedding, Reshape, Input = Keras.layers.Embedding, Keras.layers.Reshape, Keras.layers.Input
 CSVLogger = Keras.callbacks.CSVLogger
+EarlyStopping = Keras.callbacks.EarlyStopping
 
 
 def skipgram_model(vocab_size, embedding_size):
@@ -34,5 +35,8 @@ def skipgram_model(vocab_size, embedding_size):
     return model
 
 
-def csv_callback(output_file):
-    return CSVLogger(output_file)
+def skipgram_callbacks(csv_output_file):
+    return [
+        CSVLogger(output_file),
+        EarlyStopping(monitor='loss', patience=25, restore_best_weights=True)
+    ]
