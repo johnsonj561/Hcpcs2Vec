@@ -5,7 +5,10 @@
 #SBATCH -e errors.%j.txt
 #SBATCH -o output.%j.txt
 #SBATCH -p longq-bigdata7
-#SBATCH --mem=75gb
+#SBATCH --mem=80gb
+#SBATCH --exclusive
+#SBATCHH -w node090
+
 
 source ~/git/Hcpcs2Vec/env/bin/activate
 

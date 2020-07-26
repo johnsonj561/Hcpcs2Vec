@@ -1,0 +1,5 @@
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+srun: got SIGCONT
+slurmstepd: error: *** JOB 221568 ON node090 CANCELLED AT 2020-07-26T09:53:53 ***
+srun: forcing job termination
+slurmstepd: error: *** STEP 221568.0 ON node090 CANCELLED AT 2020-07-26T09:53:53 ***
