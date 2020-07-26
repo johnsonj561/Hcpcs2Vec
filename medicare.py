@@ -106,28 +106,28 @@ def load_data(data_dir, output_path=None, debug=False):
 
     # 2016 Part B
     # reuses columns from 2015
-    path = os.path.join(
-        data_dir,
-        '2016',
-        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2016.csv')
-    df_2016 = pd.read_csv(path, usecols=columns.keys()) \
-        .rename(columns=columns)
-    df_2016['year'] = 2016
-    print(f'Loaded 2016 with shape {df_2016.shape}')
+    # path = os.path.join(
+    #     data_dir,
+    #     '2016',
+    #     'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2016.csv')
+    # df_2016 = pd.read_csv(path, usecols=columns.keys()) \
+    #     .rename(columns=columns)
+    # df_2016['year'] = 2016
+    # print(f'Loaded 2016 with shape {df_2016.shape}')
 
     # 2017 Part B
     # Reuses columns from 2015
-    path = os.path.join(
-        data_dir,
-        '2017',
-        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2017.csv')
-    df_2017 = pd.read_csv(path, usecols=columns.keys()) \
-        .rename(columns=columns)
-    df_2017['year'] = 2017
-    print(f'Loaded 2017 with shape {df_2017.shape}')
+    # path = os.path.join(
+    #     data_dir,
+    #     '2017',
+    #     'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2017.csv')
+    # df_2017 = pd.read_csv(path, usecols=columns.keys()) \
+    #     .rename(columns=columns)
+    # df_2017['year'] = 2017
+    # print(f'Loaded 2017 with shape {df_2017.shape}')
 
     # Concatenate All Years
-    df = pd.concat([df_2012, df_2013, df_2014, df_2015, df_2016, df_2017])
+    df = pd.concat([df_2012, df_2013, df_2014, df_2015])
     print(f'All years concatenated, final shape is {df.shape}')
     print(f'Data info: \n{df.info()}')
 
