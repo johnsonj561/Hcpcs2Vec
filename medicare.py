@@ -6,7 +6,7 @@ def load_data_sample(data_dir, nrows):
     data_file = os.path.join(
         data_dir,
         '2012',
-        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_CY2012.csv')
+        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_CY2012.csv.gz')
     print(f'Loading sample of Medicare Part B 2012 data from {data_file}')
     columns = {
         'National Provider Identifier': 'npi',
@@ -38,7 +38,7 @@ def load_data(data_dir, output_path=None, debug=False):
     path = os.path.join(
         data_dir,
         '2012',
-        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_CY2012.csv')
+        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_CY2012.csv.gz')
     df_2012 = pd.read_csv(path, usecols=columns.keys()) \
         .rename(columns=columns)
     df_2012['year'] = 2012
@@ -54,7 +54,7 @@ def load_data(data_dir, output_path=None, debug=False):
     path = os.path.join(
         data_dir,
         '2013',
-        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_CY2013.csv')
+        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_CY2013.csv.gz')
     df_2013 = pd.read_csv(path, usecols=columns.keys()) \
         .rename(columns=columns)
     df_2013['year'] = 2013
@@ -70,7 +70,7 @@ def load_data(data_dir, output_path=None, debug=False):
     path = os.path.join(
         data_dir,
         '2014',
-        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2014.csv')
+        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2014.csv.gz')
     df_2014 = pd.read_csv(path, usecols=columns.keys()) \
         .rename(columns=columns)
     df_2014['year'] = 2014
@@ -86,7 +86,7 @@ def load_data(data_dir, output_path=None, debug=False):
     path = os.path.join(
         data_dir,
         '2015',
-        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2015.csv')
+        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2015.csv.gz')
     df_2015 = pd.read_csv(path, usecols=columns.keys()) \
         .rename(columns=columns)
     df_2015['year'] = 2015
