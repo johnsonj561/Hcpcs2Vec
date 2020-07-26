@@ -13,7 +13,6 @@ from utils import file_ts, Timer, args_to_dict, model_summary_to_string  # NOQA:
 
 
 # parse cli args
-data_dir = os.environ['CMS_RAW']
 filename = sys.argv[0].replace('.py', '')
 cli_args = args_to_dict(sys.argv)
 

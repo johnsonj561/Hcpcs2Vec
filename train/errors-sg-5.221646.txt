@@ -1,7 +1,0 @@
-generate-skipgrams.py:51: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  group.sort_values(by='count', inplace=True)
-generate-skipgrams.py:62: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-  corpus = np.array(list(filter(lambda x: len(x) <= max_seq_length, corpus)))

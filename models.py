@@ -7,6 +7,7 @@ Dense, Dot = Keras.layers.Dense, Keras.layers.dot
 Embedding, Reshape, Input = Keras.layers.Embedding, Keras.layers.Reshape, Keras.layers.Input
 CSVLogger = Keras.callbacks.CSVLogger
 EarlyStopping = Keras.callbacks.EarlyStopping
+Callback = Keras.callbacks.Callback
 
 
 def skipgram_model(vocab_size, embedding_size):
@@ -35,8 +36,28 @@ def skipgram_model(vocab_size, embedding_size):
     return model
 
 
-def skipgram_callbacks(csv_output_file):
+class EpochTimerCallback(Keras.callbacks.Callback):
+    def __init__(self, output_file):
+        self.output_file = output_file
+        self.t0 = time.time()
+        self.times = []
+
+    def on_epoch_end(self, epoch, logs, generator=None):
+        delta = time.time() - self.t0
+        self.t0 = time.time()
+        self.times.append(str(delta))
+        print(f'Completed epoch {epoch} in {delta} s')
+
+    def on_train_end(self, logs=None):
+        with open(self.output_file, 'a') as out:
+            out.write()
+
+
+def skipgram_callbacks(output_file):
+    csv_out = f'loss-{output_file}'
+    timing_out = f'epoch_time-{output_file}'
     return [
-        CSVLogger(output_file),
-        EarlyStopping(monitor='loss', patience=25, restore_best_weights=True)
+        CSVLogger(csv_out),
+        EarlyStopping(monitor='loss', patience=25, restore_best_weights=True),
+        EpochTimerCallback(timing_out)
     ]
