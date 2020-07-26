@@ -4,17 +4,19 @@ import os
 import sys
 import pickle
 from sklearn.preprocessing import LabelEncoder
-make_sampling_table = Keras.preprocessing.sequence.make_sampling_table
-skipgrams = Keras.preprocessing.sequence.skipgrams
-proj_dir = '/Users/jujohnson/git/Hcpcs2Vec/'
+import tensorflow as tf
+make_sampling_table = tf.keras.preprocessing.sequence.make_sampling_table
+skipgrams = tf.keras.preprocessing.sequence.skipgrams
+# proj_dir = '/Users/jujohnson/git/Hcpcs2Vec/'
+proj_dir = '/home/jjohn273/git/Hcpcs2Vec/'
 sys.path.append(proj_dir)
-from utils import Timer  # NOQA: E402
-
+from utils import file_ts, Timer  # NOQA: E402
+from medicare import load_data # NOQA: E402
 
 # config
 debug = True
 data_dir = os.environ['CMS_RAW']
-window_size = 5
+window_size = 20
 ts = file_ts()
 
 
@@ -36,7 +38,7 @@ print(f'Loaded data in {timer.lap()}')
 # generate and save HCPCS ID Mapping
 le = LabelEncoder()
 data['hcpcs_id'] = le.fit_transform(data['hcpcs'].astype(str))
-with open(output_file, 'wb') as fout:
+with open(hcpcs_map_output, 'wb') as fout:
     pickle.dump(le.classes_, fout)
 print(f'Generated HCPCS-ID mapping in {timer.lap()}')
 
