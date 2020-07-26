@@ -21,8 +21,10 @@ ts = file_ts()
 # output files
 partb_output = os.path.join(proj_dir, 'data', 'partb-2012-2017.csv.gz')
 hcpcs_map_output = os.path.join('data', f'hcpcs-labelencoding.{ts}.pickle')
-skipgram_x_output = os.path.join('data', f'skipgrams-x-{window_size}-{ts}.npy')
-skipgram_y_output = os.path.join('data', f'skipgrams-y-{window_size}-{ts}.npy')
+skipgram_x_output = os.path.join(
+    'data', f'skipgrams-x-w{window_size}-{ts}.npy')
+skipgram_y_output = os.path.join(
+    'data', f'skipgrams-y-w{window_size}-{ts}.npy')
 
 
 # load Medicare Data
