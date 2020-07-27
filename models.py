@@ -58,6 +58,6 @@ def skipgram_callbacks(output_file):
     timing_out = f'epoch_time-{output_file}'
     return [
         CSVLogger(csv_out),
-        EarlyStopping(monitor='loss', patience=25, restore_best_weights=True),
+        EarlyStopping(monitor='loss', patience=5, restore_best_weights=True),
         EpochTimerCallback(timing_out)
     ]

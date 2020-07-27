@@ -24,19 +24,18 @@ y_skipgrams_input = cli_args.get('y_skipgrams_input')
 y_skipgrams_input = os.path.join(proj_dir, 'data', y_skipgrams_input)
 
 
-# outputs
-ts = file_ts()
-model_file = f'skipgram-model-{epochs}-{embedding_size}-{batch_size}-{file_ts()}'
-model_output = os.path.join(proj_dir, 'models', model_file)
-epoch_csv_output = f'train-loss-{ts}.csv'
-
-
 # model settings
 epochs = int(cli_args.get('epochs', 1000))  # early stopping will end earlier
-batch_size = int(cli_args.get('batch_size', 128))
+batch_size = int(cli_args.get('batch_size', 256))
 embedding_size = int(cli_args.get('embedding_size', 300))
 model_config = f'bs{batch_size}-es{embedding_size}'
 print(f'Using model config: {model_config}')
+
+
+# outputs
+ts = file_ts()
+model_output = os.path.join(proj_dir, 'models', f'model-{model_config}-{ts}')
+callback_output = f'train-{ts}.csv'
 
 
 # load skipgrams
@@ -61,7 +60,7 @@ print(model_summary_to_string(model))
 
 
 # train model
-callbacks = skipgram_callbacks(epoch_csv_output)
+callbacks = skipgram_callbacks(callback_output)
 model.fit(x=[word_target, word_context], y=y, verbose=0,
           epochs=epochs, batch_size=batch_size, callbacks=callbacks)
 print(f'Training completed in {timer.lap()}')
