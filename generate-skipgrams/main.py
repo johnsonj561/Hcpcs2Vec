@@ -72,6 +72,7 @@ max_seq_length = np.quantile(lengths, quantile)
 corpus = np.array(list(filter(lambda x: len(x) <= max_seq_length, corpus)))
 print(f'Removed longest hcpcs seq from {quantile}+ quantile in {timer.lap()}')
 print(f'Updated corpus length {len(corpus)}')
+print(f'Maximum sequence length: {max_seq_length}')
 
 
 # Get vocab size
