@@ -10,23 +10,27 @@ skipgrams = tf.keras.preprocessing.sequence.skipgrams
 # proj_dir = '/Users/jujohnson/git/Hcpcs2Vec/'
 proj_dir = '/home/jjohn273/git/Hcpcs2Vec/'
 sys.path.append(proj_dir)
-from utils import file_ts, Timer  # NOQA: E402
+from utils import args_to_dict, file_ts, Timer  # NOQA: E402
 from medicare import load_data # NOQA: E402
 
+# parse cli args
+filename = sys.argv[0].replace('.py', '')
+cli_args = args_to_dict(sys.argv)
+window_size = int(cli_args.get('window_size'))
+debug = cli_args.get('debug') == 'true'
+print(f'Using debug: {debug}, window size: {window_size}')
+
+
 # config
-debug = True
 data_dir = os.environ['CMS_RAW']
-window_size = 20
 ts = file_ts()
 
 
 # output files
-partb_output = os.path.join(proj_dir, 'data', 'partb-2012-2017.csv.gz')
-hcpcs_map_output = os.path.join('data', f'hcpcs-labelencoding.{ts}.pickle')
-skipgram_x_output = os.path.join(
-    'data', f'skipgrams-x-w{window_size}-{ts}.npy')
-skipgram_y_output = os.path.join(
-    'data', f'skipgrams-y-w{window_size}-{ts}.npy')
+partb_output = os.path.join(proj_dir, 'data', 'partb-2012-2015.csv.gz')
+hcpcs_map_output = os.path.join(proj_dir, 'data', f'hcpcs-labelencoding.{ts}.pickle')
+skipgram_x_output = os.path.join(proj_dir, 'data', f'skipgrams-x-w{window_size}-{ts}.npy')
+skipgram_y_output = os.path.join(proj_dir, 'data', f'skipgrams-y-w{window_size}-{ts}.npy')
 
 
 # load Medicare Data
@@ -38,8 +42,9 @@ print(f'Loaded data in {timer.lap()}')
 # generate and save HCPCS ID Mapping
 le = LabelEncoder()
 data['hcpcs_id'] = le.fit_transform(data['hcpcs'].astype(str))
-with open(hcpcs_map_output, 'wb') as fout:
-    pickle.dump(le.classes_, fout)
+if not debug:
+    with open(hcpcs_map_output, 'wb') as fout:
+        pickle.dump(le.classes_, fout)
 print(f'Generated HCPCS-ID mapping in {timer.lap()}')
 
 
@@ -88,5 +93,9 @@ print(f'Created skip-gram pairs with shape: {x.shape} in {timer.lap()}')
 
 
 # Save results
-np.save(skipgram_x_output, x)
-np.save(skipgram_y_output, y)
+if not debug:
+    np.save(skipgram_x_output, x)
+    np.save(skipgram_y_output, y)
+    print(f'Saved skipgrams to {skipgram_x_output}, {skipgram_y_output}')
+
+
