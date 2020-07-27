@@ -11,12 +11,14 @@ skipgrams = tf.keras.preprocessing.sequence.skipgrams
 proj_dir = '/home/jjohn273/git/Hcpcs2Vec/'
 sys.path.append(proj_dir)
 from utils import args_to_dict, file_ts, Timer  # NOQA: E402
-from medicare import load_data # NOQA: E402
+from medicare import load_data  # NOQA: E402
 
 # parse cli args
 filename = sys.argv[0].replace('.py', '')
 cli_args = args_to_dict(sys.argv)
-window_size = int(cli_args.get('window_size'))
+window_size = cli_args.get('window_size')
+if window_size != None:
+    window_size = int(window_size)
 debug = cli_args.get('debug') == 'true'
 print(f'Using debug: {debug}, window size: {window_size}')
 
@@ -28,9 +30,12 @@ ts = file_ts()
 
 # output files
 partb_output = os.path.join(proj_dir, 'data', 'partb-2012-2015.csv.gz')
-hcpcs_map_output = os.path.join(proj_dir, 'data', f'hcpcs-labelencoding.{ts}.pickle')
-skipgram_x_output = os.path.join(proj_dir, 'data', f'skipgrams-x-w{window_size}-{ts}.npy')
-skipgram_y_output = os.path.join(proj_dir, 'data', f'skipgrams-y-w{window_size}-{ts}.npy')
+hcpcs_map_output = os.path.join(
+    proj_dir, 'data', f'hcpcs-labelencoding.{ts}.pickle')
+skipgram_x_output = os.path.join(
+    proj_dir, 'data', f'skipgrams-x-w{window_size}-{ts}.npy')
+skipgram_y_output = os.path.join(
+    proj_dir, 'data', f'skipgrams-y-w{window_size}-{ts}.npy')
 
 
 # load Medicare Data
@@ -84,6 +89,9 @@ print(f'Using vocab_size {vocab_size}')
 sampling_table = make_sampling_table(vocab_size)
 x, y = [], []
 for seq in corpus:
+    # if window size is undefined, treat entire sequence as window
+    if window_size == None:
+        window_size = len(corpus) / 2
     pairs, labels = skipgrams(
         seq, vocab_size, window_size=window_size, sampling_table=sampling_table)
     x.extend(pairs)
@@ -97,5 +105,3 @@ if not debug:
     np.save(skipgram_x_output, x)
     np.save(skipgram_y_output, y)
     print(f'Saved skipgrams to {skipgram_x_output}, {skipgram_y_output}')
-
-
