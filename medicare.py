@@ -17,6 +17,7 @@ def load_data_sample(data_dir, nrows):
     df = pd.read_csv(data_file, usecols=list(columns.keys()))
     df = df.sample(nrows)
     df.rename(columns=columns, inplace=True)
+    df['year'] = 2012
     print(f'Loaded data with shape: {df.shape}')
     return df
 
