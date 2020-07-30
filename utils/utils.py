@@ -1,4 +1,3 @@
-import tensorflow as tf
 import pickle
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
