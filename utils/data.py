@@ -3,8 +3,8 @@ import os
 import numpy as np
 import sys
 
-# proj_dir = '/home/jjohn273/git/Hcpcs2Vec/'
-proj_dir = '/Users/jujohnson/git/Hcpcs2Vec/'
+proj_dir = '/home/jjohn273/git/Hcpcs2Vec/'
+# proj_dir = '/Users/jujohnson/git/Hcpcs2Vec/'
 sys.path.append(proj_dir)
 from utils.utils import Timer
 
