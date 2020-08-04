@@ -164,7 +164,7 @@ def load_hcpcs_corpus(debug=False):
     print(f'Generated hcpcs sequences in {timer.lap()}')
 
     # drop top 1 percent longest sequences
-    quantile = 0.98
+    quantile = 0.99
     grouped_hcpcs['seq_length'] = grouped_hcpcs['hcpcs'].agg(len)
     max_seq_length = grouped_hcpcs['seq_length'].quantile(quantile)
     grouped_hcpcs = grouped_hcpcs.loc[grouped_hcpcs['seq_length']
