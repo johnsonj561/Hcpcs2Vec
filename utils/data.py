@@ -154,6 +154,9 @@ def load_hcpcs_corpus(debug=False):
     data = load_data(data_dir, partb_output, debug)
     print(f'Loaded data in {timer.lap()}')
 
+    # clean missing values
+    data.dropna(subset=['hcpcs','count'], inplace=True)
+
     # generate sequences of HCPCS codes
     # that occur in the same context
     grouped_hcpcs = data \
