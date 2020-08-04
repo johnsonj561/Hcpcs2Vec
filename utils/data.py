@@ -1,3 +1,4 @@
+from utils.utils import Timer
 import pandas as pd
 import os
 import numpy as np
@@ -6,13 +7,12 @@ import sys
 proj_dir = '/home/jjohn273/git/Hcpcs2Vec/'
 # proj_dir = '/Users/jujohnson/git/Hcpcs2Vec/'
 sys.path.append(proj_dir)
-from utils.utils import Timer
 
 
 # path to raw cms data
 data_dir = os.environ['CMS_RAW']
-    
-    
+
+
 def load_data_sample(data_dir, nrows):
     data_file = os.path.join(
         data_dir,
@@ -31,7 +31,6 @@ def load_data_sample(data_dir, nrows):
     df['year'] = 2012
     print(f'Loaded data with shape: {df.shape}')
     return df
-
 
 
 def load_data(data_dir, output_path=None, debug=False):
@@ -105,8 +104,28 @@ def load_data(data_dir, output_path=None, debug=False):
     df_2015['year'] = 2015
     print(f'Loaded 2015 with shape {df_2015.shape}')
 
+  # 2016 Part B
+    path = os.path.join(
+        data_dir,
+        '2016',
+        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2016.csv.gz')
+    df_2016 = pd.read_csv(path, usecols=columns.keys()) \
+        .rename(columns=columns)
+    df_2016['year'] = 2016
+    print(f'Loaded 2016 with shape {df_2016.shape}')
+
+    # 2017 Part B
+    path = os.path.join(
+        data_dir,
+        '2017',
+        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2017.csv.gz')
+    df_2017 = pd.read_csv(path, usecols=columns.keys()) \
+        .rename(columns=columns)
+    df_2017['year'] = 2017
+    print(f'Loaded 2017 with shape {df_2017.shape}')
+
     # Concatenate All Years
-    df = pd.concat([df_2012, df_2013, df_2014, df_2015])
+    df = pd.concat([df_2012, df_2013, df_2014, df_2016, df_2017])
     print(f'All years concatenated, final shape is {df.shape}')
     print(f'Data info: \n{df.info()}')
 
@@ -118,48 +137,41 @@ def load_data(data_dir, output_path=None, debug=False):
     return df
 
 
-
 def load_hcpcs_corpus(debug=False):
     corpus_file = 'debug-corpus.npy' if debug else 'corpus.npy'
     corpus_output = os.path.join(proj_dir, 'data', corpus_file)
-    partb_file = 'partb-2012.csv.gz' if debug else 'partb-2012-2015.csv.gz'
+    partb_file = 'partb-2012.csv.gz' if debug else 'partb-2012-2017.csv.gz'
     partb_output = os.path.join(proj_dir, 'data', partb_file)
-        
-        
+
     # load from disk if exists
     if os.path.isfile(corpus_output):
         print(f'Loading corpus from disk {corpus_output}')
         corpus = np.load(corpus_output, allow_pickle=True)
         return corpus
 
-
     # load Medicare Data
     timer = Timer()
     data = load_data(data_dir, partb_output, debug)
     print(f'Loaded data in {timer.lap()}')
 
-
     # generate sequences of HCPCS codes
     # that occur in the same context
     grouped_hcpcs = data \
-      .sort_values(by='count') \
-      .groupby(by=['year', 'npi'])['hcpcs'] \
-      .agg(list)
+        .sort_values(by='count') \
+        .groupby(by=['year', 'npi'])['hcpcs'] \
+        .agg(list)
     grouped_hcpcs = pd.DataFrame(grouped_hcpcs)
     print(f'Generated hcpcs sequences in {timer.lap()}')
-
 
     # drop top 1 percent longest sequences
     quantile = 0.98
     grouped_hcpcs['seq_length'] = grouped_hcpcs['hcpcs'].agg(len)
     max_seq_length = grouped_hcpcs['seq_length'].quantile(quantile)
-    grouped_hcpcs = grouped_hcpcs.loc[grouped_hcpcs['seq_length'] <= max_seq_length]
+    grouped_hcpcs = grouped_hcpcs.loc[grouped_hcpcs['seq_length']
+                                      <= max_seq_length]
     print(f'Removed sequences longer than {max_seq_length}')
-
 
     # save corpus
     np.save(corpus_output, grouped_hcpcs['hcpcs'].values)
-    
-    
+
     return grouped_hcpcs['hcpcs'].values
-    
