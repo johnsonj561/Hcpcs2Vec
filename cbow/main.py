@@ -26,10 +26,9 @@ desc = f'e{embedding_size}-w{window_size}-i{iters}-t{ts}'
 
 # I/O
 data_dir = os.environ['CMS_RAW']
-curr_dir = os.path.join(proj_dir, 'model-cbow')
-model_output = os.path.join(curr_dir, 'saved-models', f'cbow-{desc}.model')
+curr_dir = os.path.join(proj_dir, 'cbow')
 embeddings_output = os.path.join(
-    curr_dir, 'saved-models', f'embeddings-{desc}.kv')
+    proj_dir, 'embeddings', f'cbow-{desc}.kv')
 loss_output = os.path.join(curr_dir, 'logs', f'train-loss-{desc}.csv')
 time_output = os.path.join(curr_dir, 'logs', f'train-time-{desc}.csv')
 
@@ -73,4 +72,3 @@ print(f'Training completed in {timer.lap()}')
 
 # save embeddings
 model.wv.save(embeddings_output)
-model.save(model_output)
