@@ -26,10 +26,9 @@ desc = f'e{embedding_size}-w{window_size}-i{iters}-t{ts}'
 
 # I/O
 data_dir = os.environ['CMS_RAW']
-curr_dir = os.path.join(proj_dir, 'model-skipgram')
-model_output = os.path.join(curr_dir, 'saved-models', f'sg-{desc}.model')
+curr_dir = os.path.join(proj_dir, 'skipgram')
 embeddings_output = os.path.join(
-    curr_dir, 'saved-models', f'embeddings-{desc}.kv')
+    proj_dir, 'embeddings', f'skipgram-{desc}.kv')
 loss_output = os.path.join(curr_dir, 'logs', f'train-loss-{desc}.csv')
 time_output = os.path.join(curr_dir, 'logs', f'train-time-{desc}.csv')
 
@@ -74,4 +73,3 @@ print(f'Training completed in {timer.lap()}')
 
 # save embeddings
 model.wv.save(embeddings_output)
-model.save(model_output)
