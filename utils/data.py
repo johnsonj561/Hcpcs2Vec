@@ -123,12 +123,12 @@ def load_data(data_dir, output_path=None, debug=False):
         .rename(columns=columns)
     df_2017['year'] = 2017
     print(f'Loaded 2017 with shape {df_2017.shape}')
-    
+
     # 2018 Part B
     path = os.path.join(
         data_dir,
         '2018',
-        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2017.csv.gz')
+        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2018.csv.gz')
     df_2018 = pd.read_csv(path, usecols=columns.keys()) \
         .rename(columns=columns)
     df_2018['year'] = 2018
@@ -150,7 +150,7 @@ def load_data(data_dir, output_path=None, debug=False):
 def load_hcpcs_corpus(debug=False):
     corpus_file = 'debug-corpus.npy' if debug else 'corpus.npy'
     corpus_output = os.path.join(proj_dir, 'data', corpus_file)
-    partb_file = 'partb-2012.csv.gz' if debug else 'partb-2012-2017.csv.gz'
+    partb_file = 'partb-2012.csv.gz' if debug else 'partb-2012-2018.csv.gz'
     partb_output = os.path.join(proj_dir, 'data', partb_file)
 
     # load from disk if exists
