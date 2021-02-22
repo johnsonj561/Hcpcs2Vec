@@ -123,9 +123,19 @@ def load_data(data_dir, output_path=None, debug=False):
         .rename(columns=columns)
     df_2017['year'] = 2017
     print(f'Loaded 2017 with shape {df_2017.shape}')
+    
+    # 2018 Part B
+    path = os.path.join(
+        data_dir,
+        '2018',
+        'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2017.csv.gz')
+    df_2018 = pd.read_csv(path, usecols=columns.keys()) \
+        .rename(columns=columns)
+    df_2018['year'] = 2018
+    print(f'Loaded 2018 with shape {df_2018.shape}')
 
     # Concatenate All Years
-    df = pd.concat([df_2012, df_2013, df_2014, df_2016, df_2017])
+    df = pd.concat([df_2012, df_2013, df_2014, df_2016, df_2017, df_2018])
     print(f'All years concatenated, final shape is {df.shape}')
     print(f'Data info: \n{df.info()}')
 

@@ -14,5 +14,5 @@ source ~/git/Hcpcs2Vec/env/bin/activate
 
 srun python3 main.py \
   iters=100 \
-  embedding_size=75 \
+  embedding_size=150 \
   window_size=5
