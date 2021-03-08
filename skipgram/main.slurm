@@ -1,10 +1,11 @@
 #!/bin/bash
 
-#SBATCH -J sg-75-w5
+#SBATCH -J sg-e150-w5
 #SBATCH -A jjohn273
-#SBATCH -e errors.sg-75-w5.%j.txt
-#SBATCH -o output.sg-75-w5.%j.txt
-#SBATCH -p longq7
+#SBATCH -e errors.sg-e150-w5.%j.txt
+#SBATCH -o output.sg-e150-w5.%j.txt
+#SBATCH -p shortq7
+#SBATCH -w nodeamd002
 #SBATCH --mem=20gb
 
 source ~/git/Hcpcs2Vec/env/bin/activate
