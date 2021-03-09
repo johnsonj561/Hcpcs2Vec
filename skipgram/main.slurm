@@ -4,8 +4,7 @@
 #SBATCH -A jjohn273
 #SBATCH -e errors.sg-e150-w5.%j.txt
 #SBATCH -o output.sg-e150-w5.%j.txt
-#SBATCH -p shortq7
-#SBATCH -w nodeamd002
+#SBATCH -p longq-bigdata7
 #SBATCH --mem=20gb
 
 source ~/git/Hcpcs2Vec/env/bin/activate

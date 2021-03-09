@@ -1,5 +1,0 @@
-srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
-slurmstepd: error: *** STEP 403962.0 ON nodeamd002 CANCELLED AT 2021-02-22T02:08:08 DUE TO TIME LIMIT ***
-slurmstepd: error: *** JOB 403962 ON nodeamd002 CANCELLED AT 2021-02-22T02:08:08 DUE TO TIME LIMIT ***
-srun: got SIGCONT
-srun: forcing job termination
