@@ -1,75 +1,76 @@
-import sys
+import argparse
+import logging
 import os
-import numpy as np
-from gensim.models import Word2Vec, KeyedVectors
+import sys
+import time
 
-proj_dir = '/home/jjohn273/git/Hcpcs2Vec/'
-# proj_dir = '/Users/jujohnson/git/Hcpcs2Vec/'
+from gensim.models import Word2Vec
+
+# proj_dir = "/home/jjohn273/git/Drug2Vec/"
+proj_dir = "/Users/jujohnson/git/Drug2Vec/"
 sys.path.append(proj_dir)
 from utils.callbacks import GensimEpochCallback  # NOQA: E402
-from utils.utils import get_vocab_size, file_ts, Timer, args_to_dict  # NOQA: E402
-from utils.data import load_hcpcs_corpus  # NOQA: E402
+from utils.data import load_drug_name_corpus  # NOQA: E402
+from utils.utils import file_ts, get_vocab_size  # NOQA: E402
 
+logging.basicConfig(level=logging.INFO)
 
-# parse cli args
-filename = sys.argv[0].replace('.py', '')
-cli_args = args_to_dict(sys.argv)
-debug = cli_args.get('debug') == 'true'
-ts = file_ts()
-
-# model config
-window_size = int(cli_args.get('window_size', 5))
-min_seq_length = int(cli_args.get('min_seq_length', 2))
-embedding_size = int(cli_args.get('embedding_size', 300))
-iters = int(cli_args.get('iters', 5))
-desc = f'e{embedding_size}-w{window_size}-i{iters}-t{ts}'
+# Parse cli argurments
+parser = argparse.ArgumentParser(
+    description="Train an ALS Collab Filtering model on transactional data"
+)
+parser.add_argument("--iters", type=int, help="Number of training iterations.")
+parser.add_argument(
+    "--embedding-size", type=int, help="Number of dimensions for embeddings."
+)
+parser.add_argument("--window-size", type=int, help="Window size for skipgram model")
+parser.add_argument(
+    "--debug",
+    type=bool,
+    help="Enabling debug mode runs job with reduced data set",
+    default=False,
+)
+args = parser.parse_args()
 
 # I/O
-data_dir = os.environ['CMS_RAW']
-curr_dir = os.path.join(proj_dir, 'skipgram')
-embeddings_output = os.path.join(
-    proj_dir, 'embeddings', f'skipgram-{desc}.kv')
-loss_output = os.path.join(curr_dir, 'logs', f'train-loss-{desc}.csv')
-time_output = os.path.join(curr_dir, 'logs', f'train-time-{desc}.csv')
+ts = file_ts()
+min_seq_length = 2
+desc = f"e{args.embedding_size}-w{args.window_size}-i{args.iters}-t{ts}"
+embeddings_output = os.path.join(proj_dir, "embeddings", f"skipgram-{desc}.kv")
+loss_output = os.path.join("logs", f"train-loss-{desc}.csv")
+time_output = os.path.join("logs", f"train-time-{desc}.csv")
 
 
-# load corpus
-timer = Timer()
-corpus = load_hcpcs_corpus(debug)
-print(f'Loaded corpus with length {len(corpus)} in {timer.lap()}')
+# Load Part D data
+t0 = time.time()
+corpus = load_drug_name_corpus(args.debug)
+logging.info(f"Loaded corpus with length {len(corpus)} in {time.time() - t0}")
 
-
-# use sample for debug
-if debug:
-    corpus = corpus[:500000]
-    print(f'Using sample of corpus with length {len(corpus)}')
-
-
-# vocab size
+# Get vocab size
 vocab_size = get_vocab_size(corpus)
 
-
-# loss and timing callback
+# Create loss and timing callback
 callback = GensimEpochCallback(loss_output, time_output)
 
-
 # train model
-timer.reset()
+logging.info(f"Training model for {args.iters} iterations")
+t0 = time.time()
 model = Word2Vec(
     sentences=corpus,
-    window=window_size,
-    size=embedding_size,
+    window=args.window_size,
+    size=args.embedding_size,
     min_count=min_seq_length,
     workers=10,
     sg=1,  # use skipgram
     hs=0,  # use negative sampling,
     callbacks=[callback],
     compute_loss=True,
-    iter=iters
+    iter=args.iters,
 )
 
-print(f'Training completed in {timer.lap()}')
+logging.info(f"Training completed in {time.time() - t0}")
 
 
 # save embeddings
 model.wv.save(embeddings_output)
+logging.info(f"Embeddings saved to {embeddings_output}")
