@@ -1,0 +1,7 @@
+[flake8]
+exclude =
+  **.ipynb_checkpoints
+  **__pycache__
+extend-ignore = E203, E266, E501
+max-line-length = 88
+max-complexity = 18
