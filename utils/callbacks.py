@@ -21,10 +21,10 @@ class GensimEpochCallback(CallbackAny2Vec):
         self.prev_loss = cum_loss
         self.loss.append(str(loss))
         self.epoch += 1
-        print(f"Epoch: {self.epoch} \t loss: {loss} \t time: {delta}")
+        print(f'Epoch: {self.epoch} \t loss: {loss} \t time: {delta}')
 
     def on_train_end(self, model):
-        with open(self.loss_out, "w") as fout:
-            fout.write(",".join(self.loss))
-        with open(self.time_out, "w") as fout:
-            fout.write(",".join(self.times))
+        with open(self.loss_out, 'w') as fout:
+            fout.write(','.join(self.loss))
+        with open(self.time_out, 'w') as fout:
+            fout.write(','.join(self.times))
