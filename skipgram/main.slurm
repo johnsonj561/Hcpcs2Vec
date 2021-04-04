@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#SBATCH -J sg-e150-w5
+#SBATCH -J sg-e75-w10
 #SBATCH -A jjohn273
-#SBATCH -e errors.sg-e150-w5.%j.txt
-#SBATCH -o output.sg-e150-w5.%j.txt
+#SBATCH -e errors.sg-e75-w10.%j.txt
+#SBATCH -o output.sg-e75-w10.%j.txt
 #SBATCH -p longq-bigdata7
 #SBATCH --mem=20gb
 
@@ -14,5 +14,5 @@ source ~/git/Hcpcs2Vec/env/bin/activate
 
 srun python3 main.py \
   iters=100 \
-  embedding_size=150 \
-  window_size=5
+  embedding_size=75 \
+  window_size=10

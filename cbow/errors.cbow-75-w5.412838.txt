@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "main.py", line 67, in <module>
+    iter=iters
+  File "/mnt/beegfs/home/jjohn273/git/Hcpcs2Vec/env/lib/python3.7/site-packages/gensim/models/word2vec.py", line 783, in __init__
+    fast_version=FAST_VERSION)
+  File "/mnt/beegfs/home/jjohn273/git/Hcpcs2Vec/env/lib/python3.7/site-packages/gensim/models/base_any2vec.py", line 763, in __init__
+    end_alpha=self.min_alpha, compute_loss=compute_loss)
+  File "/mnt/beegfs/home/jjohn273/git/Hcpcs2Vec/env/lib/python3.7/site-packages/gensim/models/word2vec.py", line 910, in train
+    queue_factor=queue_factor, report_delay=report_delay, compute_loss=compute_loss, callbacks=callbacks)
+  File "/mnt/beegfs/home/jjohn273/git/Hcpcs2Vec/env/lib/python3.7/site-packages/gensim/models/base_any2vec.py", line 1081, in train
+    **kwargs)
+  File "/mnt/beegfs/home/jjohn273/git/Hcpcs2Vec/env/lib/python3.7/site-packages/gensim/models/base_any2vec.py", line 573, in train
+    callback.on_train_end(self)
+  File "/home/jjohn273/git/Hcpcs2Vec/utils/callbacks.py", line 27, in on_train_end
+    with open(self.loss_out, 'w') as fout:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/jjohn273/git/Hcpcs2Vec/cbow/logs/train-loss-e75-w5-i200-t030921061124.csv'
+srun: error: node019: task 0: Exited with exit code 1
