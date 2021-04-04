@@ -145,6 +145,7 @@ def load_data(data_dir, output_path=None, debug=False):
         print(f'Results saved to {output_path}')
 
     return df
+      
 
 
 def load_hcpcs_corpus(debug=False):
@@ -188,3 +189,55 @@ def load_hcpcs_corpus(debug=False):
     np.save(corpus_output, grouped_hcpcs['hcpcs'].values)
 
     return grouped_hcpcs['hcpcs'].values
+
+  
+def load_dmepos_data(data_dir, output_path=None, sample_size=False):
+    if os.path.isfile(output_path):
+        return pd.read_csv(output_path)
+    data_file = os.path.join(data_dir, 'medicare-dmepos-2013-2018.csv.gz')
+    columns = ['npi', 'hcpcs_code', 'number_of_supplier_claims']
+    df = pd.read_csv(dmepos_file, usecols=columns, nrows=sample_size)
+    return df
+
+  
+def load_dmepos_hcpcs_corpus(sample_size=None):
+    corpus_file = os.path.join(proj_dir, 'data', 'corpus.npy')
+    dmepos_file = '/Users/jujohnson/cms-data/raw/medicare-dmepos-2013-2018.csv.gz'
+    dmepos_cols = ['npi', 'year', 'hcpcs_code', 'number_of_supplier_claims']
+    
+    # load corpus from disk if exists
+    if os.path.isfile(corpus_file):
+        print(f'Loading corpus from disk {corpus_file}')
+        corpus = np.load(corpus_file, allow_pickle=True)
+        return corpus
+
+    # load Medicare Data
+    timer = Timer()
+    data = pd.read_csv(dmepos_file, usecols=dmepos_cols, nrows=sample_size)
+    print(f'Loaded data in {timer.lap()}')
+
+    # clean missing values
+    data.dropna(subset=['hcpcs_code','number_of_supplier_claims'], inplace=True)
+
+    # generate sequences of HCPCS codes
+    # that occur in the same context
+    grouped_hcpcs = data \
+        .sort_values(by='count') \
+        .groupby(by=['year', 'npi'])['hcpcs_code'] \
+        .agg(list)
+    grouped_hcpcs = pd.DataFrame(grouped_hcpcs)
+    print(f'Generated hcpcs sequences in {timer.lap()}')
+
+    # drop top 1 percent longest sequences
+    quantile = 0.99
+    grouped_hcpcs['seq_length'] = grouped_hcpcs['hcpcs_code'].agg(len)
+    max_seq_length = grouped_hcpcs['seq_length'].quantile(quantile)
+    grouped_hcpcs = grouped_hcpcs.loc[grouped_hcpcs['seq_length']
+                                      <= max_seq_length]
+    print(f'Removed sequences longer than {max_seq_length}')
+
+    # save corpus
+    np.save(corpus_output, grouped_hcpcs['hcpcs_code'].values)
+
+    return grouped_hcpcs['hcpcs_code'].values
+  

@@ -3,8 +3,8 @@ import os
 import numpy as np
 from gensim.models import Word2Vec, KeyedVectors
 
-proj_dir = '/home/jjohn273/git/Hcpcs2Vec/'
-# proj_dir = '/Users/jujohnson/git/Hcpcs2Vec/'
+# proj_dir = '/home/jjohn273/git/Hcpcs2Vec/'
+proj_dir = '/Users/jujohnson/git/Hcpcs2Vec/'
 sys.path.append(proj_dir)
 from utils.callbacks import GensimEpochCallback  # NOQA: E402
 from utils.utils import get_vocab_size, file_ts, Timer, args_to_dict  # NOQA: E402
@@ -35,7 +35,8 @@ time_output = os.path.join(curr_dir, 'logs', f'train-time-{desc}.csv')
 
 # load corpus
 timer = Timer()
-corpus = load_hcpcs_corpus(debug)
+# corpus = load_hcpcs_corpus(debug)
+corpus = load_dmepos_hcpcs_corpus()
 print(f'Loaded corpus with length {len(corpus)} in {timer.lap()}')
 
 
